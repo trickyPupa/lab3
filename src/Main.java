@@ -1,11 +1,7 @@
-import characters.GnomesGroup;
 import characters.SimpleGnome;
 import characters.Znaika;
 import other.Item;
 import other.Place;
-
-import java.util.Arrays;
-import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {

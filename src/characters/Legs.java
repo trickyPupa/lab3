@@ -15,12 +15,12 @@ public class Legs implements IDoSmth, Floatable {
         return owner;
     }
     public void flip() {
-        System.out.println(toString() + " задрались вверх");
+        System.out.println(this + " задрались вверх");
     }
 
     @Override
     public void floating() {
-        System.out.println(toString() + " плавают в воздухе");
+        System.out.println(this + " плавают в воздухе");
     }
 
     @Override
