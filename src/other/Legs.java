@@ -1,15 +1,18 @@
-package characters;
+package other;
 
-import technical.IDoSmth;
+import characters.Gnome;
 import technical.Floatable;
 
 import java.util.Objects;
 
-public class Legs implements IDoSmth, Floatable {
+public class Legs implements Floatable {
     private Gnome owner;
+    private boolean injured = false;
+    private int length;
 
-    Legs(Gnome owner){
+    public Legs(Gnome owner, int length){
         this.owner = owner;
+        this.length = length;
     }
     public Gnome getOwner(){
         return owner;
@@ -19,8 +22,19 @@ public class Legs implements IDoSmth, Floatable {
     }
 
     @Override
+    public void crash() {
+        System.out.println(owner + " ударился ногами");
+        if (Math.random() < 0.2 + (length * 0.005)) injure();
+    }
+
+    @Override
     public void floating() {
         System.out.println(this + " плавают в воздухе");
+    }
+
+    public void injure(){
+        injured = true;
+        System.out.println(owner + " повредил свои ноги");
     }
 
     @Override
@@ -38,6 +52,8 @@ public class Legs implements IDoSmth, Floatable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(owner.toString());
+        return Objects.hash(this.toString());
     }
+
+
 }

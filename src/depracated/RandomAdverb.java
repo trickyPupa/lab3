@@ -1,4 +1,4 @@
-package technical;
+package depracated;
 
 public class RandomAdverb {
     static final String[] adverbs = {"оригинально", "смешно", "хорошо", "по-комариному", "приглушенно", "встревоженно",

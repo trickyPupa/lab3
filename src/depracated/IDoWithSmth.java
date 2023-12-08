@@ -1,6 +1,7 @@
-package technical;
+package depracated;
 
 import other.Item;
+import technical.IDoSmth;
 
 public interface IDoWithSmth extends IDoSmth {
    default void do_smth_with(String verb, Item item){

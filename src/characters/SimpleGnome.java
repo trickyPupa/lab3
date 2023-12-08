@@ -4,7 +4,7 @@ import other.Place;
 
 public class SimpleGnome extends Gnome{
     public SimpleGnome(String nm) {
-        super(nm, Place.DINING_ROOM);
+        super(nm, Place.DINING_ROOM, 80);
     }
 
     @Override
