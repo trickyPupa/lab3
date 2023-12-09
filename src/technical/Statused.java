@@ -6,13 +6,19 @@ public abstract class Statused {
     protected int force;
     protected String name;
 
-    public Statused(String name, int hp){
+    public Statused(String name, int hp, int force){
         this.hp = hp;
+        this.name = name;
+        this.force = force;
     }
     public abstract void takeDamage(int d);
     public abstract void heal();
+    public abstract String presentation();
     public Status getStatus(){
         return status;
+    }
+    public int getForce(){
+        return force;
     }
     public abstract void setStatus(Status status);
     public String getName() {

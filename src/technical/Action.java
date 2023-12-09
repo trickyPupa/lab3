@@ -13,12 +13,12 @@ public class Action {
 //    летит
 
 
-    public static final String[] modes = {"оригинально", "смешно", "хорошо", "по-комариному", "приглушенно", "встревоженно",
-            "изумлённо", "внимательно", "лукаво"};
+    public static final String[] modes = {"оригинально", "смешно", "хорошо", "по-комариному", "приглушенно",
+            "внимательно", "лукаво", "тихо", ""};
 
-    private String label;
+    private final String label;
     private Status effect;
-    private boolean mode = false;
+    private boolean mode = true;
     private long force = 0;
 
     public Action(String label){
@@ -47,10 +47,10 @@ public class Action {
         this.mode = mode;
     }
     public String getStatement(){
-        String md = "";
+        String md = " ";
         if (mode) {
             int a = (int) (Math.random() * modes.length);
-            md = modes[a] + " ";
+            md += modes[a] + " ";
         }
         return md + label;
     }

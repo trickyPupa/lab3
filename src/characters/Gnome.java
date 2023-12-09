@@ -6,18 +6,18 @@ import technical.*;
 import java.util.Objects;
 
 public abstract class Gnome extends Statused implements Floatable, IDoSmth {
-    static final Action THINK = new Action("думает", Status.CONFUSED, 0, true);
-    static final Action FLY = new Action("летит", Status.NO, 0, true);
-    static final Action JUMP = new Action("прыгает", Status.NO, 5, true);
-    static final Action ASK = new Action("спрашивает", Status.NO, 3, false);
+    public static final Action THINK = new Action("думает", Status.CONFUSED, 0, true);
+    public static final Action FLY = new Action("летит", Status.NO, 0, true);
+    public static final Action ASK = new Action("спрашивает", Status.NO, 3, false);
+    public static final Action ATTACK = new Action("атакует", Status.SCARE, 5, false);
     //static final Action OPEN = new Action("открывает", Status.NO, 3, false);
 
 
     protected Place location;
     protected boolean is_floating = false;
 
-    public Gnome(String nm, Place loc, int hp){
-        super(nm, hp);
+    public Gnome(String nm, Place loc, int hp, int force){
+        super(nm, hp, force);
         this.location = loc;
     }
 
@@ -26,14 +26,15 @@ public abstract class Gnome extends Statused implements Floatable, IDoSmth {
     }
 
     public abstract void move(Place loc);
+    public abstract void fail();
 
     @Override
     public void flip(){
-        if(is_floating) System.out.println(this + " переворачивается в воздухе головой");
+        System.out.println(this + " переворачивается в воздухе");
     }
 
-    public void presentation(){
-        System.out.println(this + ", находящийся в " + this.getLocation() + " в статусе " + status.getLabel());
+    public String presentation(){
+        return this + ", находящийся в " + this.getLocation() + ",\tстатус: " + status.getLabel() + ",\tколичество здоровья: " + hp;
     }
 
     @Override
@@ -79,53 +80,53 @@ public abstract class Gnome extends Statused implements Floatable, IDoSmth {
         if (action.check(force)){
 //            System.out.println(this + " успешно " + action.getStatement());
 
-            setStatus(action.getEffect());
-
             switch (action.getLabel()){
                 case "думает":
                     System.out.println(this + action.getStatement());
+                    break;
                 case "летит":
                     if(!is_floating){
-                        System.out.println(this + " взлетает ");
+                        System.out.println(this + " взлетает");
                         floating();
                         break;
                     }
                 default:
-                    System.out.println(this + " успешно " + action.getStatement());
+                    System.out.println(this + " успешно" + action.getStatement());
             }
+            setStatus(action.getEffect());
             return true;
         } else{
-            System.out.println(this + " безуспешно " + action.getStatement());
+            System.out.println(this + " безуспешно" + action.getStatement());
             return false;
         }
     }
 
     @Override
     public boolean do_smth(Action action, Statused target) {
-        String message;
+//        String message;
         if (action.check(force)){
             //setStatus(action.getEffect());
 
             switch (action.getLabel()){
-                case "наносит урон":
-                    System.out.println(this + " успешно " + action.getStatement());
-                    target.takeDamage(1 + (int) (Math.random() * 50));
+                case "атакует":
+                    System.out.println(this + " успешно" + action.getStatement() + " " + target.getName());
+                    target.takeDamage(5 + (int) (Math.random() * (4 + Math.max(force - target.getForce(), 0))));
                     break;
                 case "спрашивает":
-                    System.out.println(this + action.getStatement() + " у " + target);
-                    if (target.getStatus() == Status.CONFUSED) {
-                        target.takeDamage(1 + (int) (Math.random() * 5));
-                    }
+                    System.out.println(this + action.getStatement() + " у " + target.getName());
                     break;
+                case "лечит":
+                    System.out.println(this + action.getStatement() + " " + target.getName());
+                    target.heal();
                 default:
-                    System.out.println(this + " успешно " + action.getStatement() + " с " + target);
+                    System.out.println(this + " успешно" + action.getStatement() + " " + target.getName());
             }
 
 //            System.out.println(message);
             target.setStatus(action.getEffect());
             return true;
         } else{
-            System.out.println(this + " безуспешно " + action.getStatement());
+            System.out.println(this + " безуспешно" + action.getStatement());
             return false;
         }
     }
@@ -134,31 +135,35 @@ public abstract class Gnome extends Statused implements Floatable, IDoSmth {
     public void takeDamage(int d) {
         if (d < hp && d > 0){
             hp -= d;
+            force -= (int) (d * 0.1);
             if(hp < 10){
                 setStatus(Status.ANXIETY);
             }
         } else if (d >= hp){
             hp = 0;
             setStatus(Status.DEAD);
+            return;
         }
-
     }
 
     @Override
     public void heal() {
         hp += 10;
+        force += 5;
+        if (status == Status.INJURED) setStatus(Status.NO);
     }
 
     @Override
     public void setStatus(Status st) {
         if (st.getType() != EntityType.ITEM && status != Status.DEAD){
+            if (status == Status.CONFUSED && st == Status.CONFUSED) {
+                takeDamage(1);
+            } else if (st == Status.INJURED) {
+                force -= 5;
+            }
+            if (status != st) System.out.println("Статус " + this + " изменился на " + st.getLabel());
             status = st;
-            System.out.println("Статус " + this + " изменился на " + status.getLabel());
+            if(status == Status.DEAD) fail();
         }
-    }
-
-    public void simple_action(String label){
-        Action simple_act = new Action(label);
-        do_smth(simple_act);
     }
 }

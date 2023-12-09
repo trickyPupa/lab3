@@ -3,13 +3,27 @@ import characters.SimpleGnome;
 import characters.MainCharacter;
 import other.Item;
 import other.Place;
+import technical.Action;
+import technical.Status;
+
+/*В конце концов Знайка все же придумал хороший способ. Дотянувшись до перил, он стал спускаться,
+цепляясь за перила руками. Наверно, со стороны это выглядело очень смешно, потому что Знайкины ноги
+болтались в воздухе, как у комара, и по мере того как он опускался все ниже, ноги его задирались
+все выше и он все больше перевертывался вниз головой. Спустившись таким оригинальным способом с
+лестницы, Знайка очутился в коридоре перед дверью в столовую. Из-за двери доносились какие-то
+приглушенные крики. Знайка прислушался и понял, что находившиеся в столовой коротышки чем-то
+встревожены. После нескольких неудачных попыток Знайка отворил дверь и очутился в столовой. То, что
+он увидел, привело его в изумление. Коротышки, собравшиеся в столовой, не сидели, как всегда, за
+столом, а плавали в различных позах по воздуху. Вокруг них плавали стулья, скамейки, миски, тарелки,
+ложки. Тут же плавала большая алюминиевая кастрюля, наполненная манной кашей.*/
+
 
 public class Main {
     public static void main(String[] args) {
-        actions2();
+        scene2();
     }
 
-    public static void actions() {
+/*    public static void actions() {
         // инциализация переменных
         MainCharacter gg = new MainCharacter();
 
@@ -57,13 +71,75 @@ public class Main {
         for (Item i: scrap){
             i.floating();
         }
-    }
+    }*/
 
-    public static void actions2() {
-        System.out.println("abobo");
-        Item a = Item.DOOR;
-        Gnome b = new MainCharacter();
-        System.out.println(a);
-        System.out.println(b);
+    public static void scene2() {
+        MainCharacter zn = new MainCharacter();
+
+//        SimpleGnome g1 = new SimpleGnome("Незнайка");
+//        SimpleGnome g2 = new SimpleGnome("Винтик");
+//        SimpleGnome g3 = new SimpleGnome("Сиропчик");
+        SimpleGnome[] gnomes = {new SimpleGnome("Незнайка"), new SimpleGnome("Винтик"), new SimpleGnome("Сиропчик")};
+        Item door = new Item("дверь", 2);
+        Item railings = new Item("перила", 2);
+        Item[] kitchen_items = {new Item("стул", 0), new Item("скамья", 0), new Item("миска", 0),
+                new Item("тарелка", 0), new Item("ложка", 0), new Item("кастрюля с кашей", 0)};
+        boolean flag;
+
+        zn.do_smth(Gnome.FLY);
+        zn.think();
+
+        flag = zn.do_smth(new Action("тянется", Status.NO, railings.getForce(), true), railings);
+
+        if (flag) {
+            zn.move(Place.STAIRS);
+            flag = zn.do_smth(new Action("открывает"), door);
+        } else {
+            zn.fail();
+            return;
+        }
+
+        if (flag) {
+            zn.move(Place.HALL);
+            for (SimpleGnome i : gnomes){
+                i.simple_action("тревожится");
+            }
+            flag = zn.do_smth(new Action("открывает"), door);
+        } else {
+            zn.fail();
+            return;
+        }
+
+        if (flag) {
+            zn.move(Place.DINING_ROOM);
+            for (SimpleGnome i : gnomes){
+                i.floating();
+                zn.do_smth(new Action("видит"), i);
+                i.do_smth(new Action("удивляет", Status.ASTONISHMENT, 2, false), zn);
+            }
+            for(Item i : kitchen_items){
+                i.floating();
+            }
+
+            Item temp = new Item("молчание", 0);
+            temp.simple_action("повисло");
+
+            for (SimpleGnome i : gnomes){
+                i.do_smth(Gnome.ATTACK, zn);
+            }
+            flag = zn.getStatus() != Status.DEAD;
+        } else {
+            zn.fail();
+            return;
+        }
+
+        if (flag){
+            zn.do_smth(new Action("лечит"), zn);
+            zn.do_smth(new Action("спасается бегством"));
+            zn.move(Place.HALL);
+        }
+        System.out.println();
+        System.out.println("Главный герой - " + zn.presentation());
+        System.out.println("Конец");
     }
 }

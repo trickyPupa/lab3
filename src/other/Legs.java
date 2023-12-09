@@ -2,13 +2,14 @@ package other;
 
 import characters.Gnome;
 import technical.Floatable;
+import technical.Status;
 
 import java.util.Objects;
 
 public class Legs implements Floatable {
-    private Gnome owner;
+    private final Gnome owner;
     private boolean injured = false;
-    private int length;
+    private final int length;
 
     public Legs(Gnome owner, int length){
         this.owner = owner;
@@ -24,7 +25,7 @@ public class Legs implements Floatable {
     @Override
     public void crash() {
         System.out.println(owner + " ударился ногами");
-        if (Math.random() < 0.2 + (length * 0.005)) injure();
+        if (Math.random() < 0.2 + (length * 0.004)) injure();
     }
 
     @Override
@@ -35,6 +36,11 @@ public class Legs implements Floatable {
     public void injure(){
         injured = true;
         System.out.println(owner + " повредил свои ноги");
+        owner.setStatus(Status.INJURED);
+    }
+
+    public boolean isInjured(){
+        return injured;
     }
 
     @Override

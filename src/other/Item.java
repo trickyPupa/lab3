@@ -1,6 +1,5 @@
 package other;
 
-import characters.Gnome;
 import technical.*;
 
 import java.util.Objects;
@@ -18,8 +17,8 @@ public class Item extends Statused implements Floatable, IDoSmth {
 //    SHOUTS("Крики"),
 //    METHOD("Способ");
 
-    Item (String name){
-        super(name, 2);
+    public Item (String name, int force){
+        super(name, 2, force);
     }
 
     @Override
@@ -36,13 +35,14 @@ public class Item extends Statused implements Floatable, IDoSmth {
     @Override
     public void floating() {
         System.out.println(this.getName() + " плавает в воздухе");
-        if (Math.random() > 0.5) this.crash();
+        if (Math.random() < 0.5) this.flip();
+        if (Math.random() < 0.5) this.crash();
     }
 
 
     @Override
     public String toString() {
-        return "Предмет " + name + " в статусе " + status.getLabel();
+        return "Предмет " + name;
     }
     @Override
     public boolean equals(Object o) {
@@ -55,10 +55,6 @@ public class Item extends Statused implements Floatable, IDoSmth {
     @Override
     public int hashCode() {
         return Objects.hash(name) + hp + Objects.hash(status.getLabel());
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -77,12 +73,12 @@ public class Item extends Statused implements Floatable, IDoSmth {
     @Override
     public boolean do_smth(Action action, Statused target) {
         if (action.check(force)){
-            System.out.println(this + " успешно " + action.getStatement() + " с " + target);
+            System.out.println(this + " успешно " + action.getStatement() + " " + target);
 
             target.setStatus(action.getEffect());
             return true;
         } else{
-            System.out.println(this + " безуспешно " + action.getStatement() + " с " + target);
+            System.out.println(this + " безуспешно " + action.getStatement() + " " + target);
             return false;
         }
     }
@@ -108,10 +104,15 @@ public class Item extends Statused implements Floatable, IDoSmth {
     }
 
     @Override
-    public void setStatus(Status stat) {
-        if (stat.getType() != EntityType.CREATUE && (status != Status.DESTROYED || status != Status.BROKEN)) {
-            status = stat;
-            System.out.println("Статус " + this.getName() + " изменился на " + status.getLabel());
+    public String presentation() {
+        return this + ",\tстатус: " + status.getLabel();
+    }
+
+    @Override
+    public void setStatus(Status st) {
+        if (st.getType() != EntityType.CREATUE && status != Status.DESTROYED && status != Status.BROKEN && status != st) {
+            System.out.println("Статус " + this.getName() + " изменился на " + st.getLabel());
+            status = st;
         }
     }
 }
