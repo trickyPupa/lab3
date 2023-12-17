@@ -1,6 +1,6 @@
 package technical;
 
-public abstract class Statused {
+public abstract class Statused implements Floatable, IDoSmth {
     protected Status status = Status.NO;
     protected int hp;
     protected int force;

@@ -5,7 +5,7 @@ import technical.*;
 
 import java.util.Objects;
 
-public abstract class Gnome extends Statused implements Floatable, IDoSmth {
+public abstract class Gnome extends Statused {
     public static final Action THINK = new Action("думает", Status.CONFUSED, 0, true);
     public static final Action FLY = new Action("летит", Status.NO, 0, true);
     public static final Action ASK = new Action("спрашивает", Status.NO, 3, false);

@@ -4,7 +4,7 @@ import technical.*;
 
 import java.util.Objects;
 
-public class Item extends Statused implements Floatable, IDoSmth {
+public class Item extends Statused {
 //    DOOR("Дверь"),
 //    RAILING("Перила"),
 //    TABLE("Стол"),
